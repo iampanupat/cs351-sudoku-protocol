@@ -1,3 +1,6 @@
+# Panupat   Chulaotrakul      NO.6210402488
+# Chottanin Pitchayaaroonsith NO.6210406599
+
 from socket import *
 
 HOST = 'localhost'
