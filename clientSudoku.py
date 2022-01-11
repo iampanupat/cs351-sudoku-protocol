@@ -4,7 +4,7 @@
 from socket import *
 
 HOST = 'localhost'
-PORT = 12018
+PORT = 12020
 
 def main():
     try:

@@ -4,7 +4,7 @@
 from socket import *
 import time
 
-SERVER_PORT = 12018
+SERVER_PORT = 12020
 
 def main():
     try:
