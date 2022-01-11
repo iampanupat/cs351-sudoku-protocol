@@ -28,7 +28,18 @@ def main():
 
         # Receive board number from server
         response = clientSocket.recv(1024)
-        board = eval(response.decode())
+
+        # Check Status Code
+        if (readResponse(response.decode())):
+            response = response.decode()
+            response = response.split('/')
+            board = eval(response[1].strip())
+        else:
+            response = response.decode()
+            response = response.split('/')
+            response = response[0].strip()
+            print('\n' + response)
+            exit()
 
         # Count all blank box
         blank_amount = 0
@@ -64,26 +75,45 @@ def main():
             clientSocket.connect((HOST, PORT))            
             clientSocket.send(answerRequest.encode())
             answerResponse = clientSocket.recv(1024)
+            
+            if (readResponse(answerResponse.decode())):
+                response = answerResponse.decode()
+                response = response.split('/')
 
-            payload = eval(answerResponse.decode())
-            if (payload[0] == -1):
-                life_amount -= 1
+                temp = response[0].split()
+                temp = temp[0].strip()
+                temp = int(temp)
+                if (temp == 201):
+                    response = response[1].strip()
+                    response = eval(response)
+                    board[response[0]][response[1]] = response[2]
+                    blank_amount -= 1
+                elif (temp == 202):
+                    life_amount -= 1
+
             else:
-                board[payload[0]][payload[1]] = payload[2]
-                blank_amount -= 1
+                response = answerResponse.decode()
+                response = response.split('/')
+                response = response[0].strip()
+                print('\n' + response + '\n')            
 
         if (life_amount == 0):
-            print('\nYOU NOOB!?!')
+            print('\nYOU LOSE')
         elif (blank_amount == 0):
-            print('\nYOU WIN <3')
+            print('\nYOU WIN')
 
         # Close TCP connection
         clientSocket.close()
 
     except ConnectionRefusedError as error:
         print("Socket Error: %s" % error)
-
     exit(0)
+
+def readResponse(response):
+    response = response.split()
+    if (int(response[0]) > 400):
+        return False
+    return True
 
 def checkDifficulty(difficulty):
     if (difficulty.lower() == 'e' or difficulty.lower() == 'easy'):
